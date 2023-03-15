@@ -10,12 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "monaco-editor": "^0.36.1",
     "pinia": "^2.0.32",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
+    "naive-ui": "^2.34.3",
+    "sass": "^1.59.3",
+    "unplugin-auto-import": "^0.15.1",
+    "unplugin-vue-components": "^0.24.1",
     "vite": "^4.1.4"
   }
 }
