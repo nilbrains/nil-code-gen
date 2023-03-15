@@ -2,14 +2,12 @@ lockfileVersion: 5.4
 
 specifiers:
   '@vitejs/plugin-vue': ^4.0.0
-  dt-sql-parser: 4.0.0-beta.3.2
   pinia: ^2.0.32
   vite: ^4.1.4
   vue: ^3.2.47
   vue-router: ^4.1.6
 
 dependencies:
-  dt-sql-parser: 4.0.0-beta.3.2
   pinia: 2.0.33_vue@3.2.47
   vue: 3.2.47
   vue-router: 4.1.6_vue@3.2.47
@@ -241,10 +239,6 @@ packages:
     dev: true
     optional: true
 
-  /@types/antlr4/4.7.0:
-    resolution: {integrity: sha512-WdyHH4PHxBQkeWoRTbuC/dvf0QErJpJE4UpESQSRmKoMER15DCLFHAHQjkwevMKQie0kqawS/eTY563GGMbz/g==}
-    dev: false
-
   /@vitejs/plugin-vue/4.0.0_vite@4.1.4+vue@3.2.47:
     resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -333,19 +327,8 @@ packages:
   /@vue/shared/3.2.47:
     resolution: {integrity: sha512-BHGyyGN3Q97EZx0taMQ+OLNuZcW3d37ZEVmEAyeoA9ERdGvm9Irc/0Fua8SNyOtV1w6BS4q25wbMzJujO9HIfQ==}
 
-  /antlr4/4.7.2:
-    resolution: {integrity: sha512-vZA1xYufXLe3LX+ja9rIVxjRmILb1x3k7KYZHltRbfJtXjJ1DlFIqt+CbPYmghx0EuzY9DajiDw+MdyEt1qAsQ==}
-    dev: false
-
   /csstype/2.6.21:
     resolution: {integrity: sha512-Z1PhmomIfypOpoMjRQB70jfvy/wxT50qW08YXO5lMIJkrdq4yOTR+AW7FqutScmB9NkLwxo+jU+kZLbofZZq/w==}
-
-  /dt-sql-parser/4.0.0-beta.3.2:
-    resolution: {integrity: sha512-QrgsWzpqqUy6vAGkK4Ep4WdZfhy0s2SNR7QuwQ3RsdDNQ4rMzH1jQTdEBK6oU+16o1xpStwjnzk3vuxMOhiisw==}
-    dependencies:
-      '@types/antlr4': 4.7.0
-      antlr4: 4.7.2
-    dev: false
 
   /esbuild/0.16.17:
     resolution: {integrity: sha512-G8LEkV0XzDMNwXKgM0Jwu3nY3lSTwSGY6XbxM9cr9+s0T/qSV1q1JVPBGzm3dcjhCic9+emZDmMffkwgPeOeLg==}
