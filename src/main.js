@@ -12,4 +12,6 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
-app.mount('#app')
+setTimeout(() => {
+    app.mount('#app')
+}, 1600)
