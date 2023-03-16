@@ -1,6 +1,6 @@
 {
   "name": "nil-code-gen",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ejs": "^3.1.9",
     "monaco-editor": "^0.36.1",
     "pinia": "^2.0.32",
+    "prettier": "^2.8.4",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },

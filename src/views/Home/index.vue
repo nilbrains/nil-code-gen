@@ -1,8 +1,12 @@
 <script setup>
 import { provide } from "vue";
 import CodeDialog from "../../components/CodeDialog.vue";
-import { useHomeTable, useHomeUploadSql } from ".";
+import { useHomeGenCode, useHomeTable, useHomeUploadSql } from ".";
 import { useCodeDialog } from "../../hooks/codeDialog";
+import { useMessage } from "naive-ui";
+
+const message = useMessage()
+
 // 表格
 const { columns, data, addEmptyRow } = useHomeTable();
 
@@ -17,7 +21,8 @@ function openSqlModel() {
   codeDialog.open({
     title: "SQL创建语句",
     code: "",
-    language: "sql"
+    language: "sql",
+    buttons: ["save", "close"]
   })
 }
 
@@ -35,11 +40,33 @@ codeDialog.listener.saveEnd = (sql) => {
       _temp.push({
         field: it.field || "",
         label: it.comment || "",
-        type: "",
+        type: "string",
       });
     });
     data.value = _temp;
   }
+}
+
+const { uiOptions, genSettingVal, tempOptions, genCodeForTemp } = useHomeGenCode()
+
+
+function gencode() {
+  // 
+
+  try {
+    const code = genCodeForTemp(data.value)
+    // console.log(code);
+    codeDialog.open({
+      title: "代码预览",
+      code: code,
+      language: "html",
+      buttons: ["close"]
+    })
+  } catch (error) {
+    console.error(error);
+    message.error(error ? error.message : "遇到一个未知的错误")
+  }
+
 }
 </script>
 
@@ -52,7 +79,9 @@ codeDialog.listener.saveEnd = (sql) => {
         </NSpace>
 
         <NSpace>
-          <NButton>生成代码</NButton>
+          <n-select style="width: 180px;" v-model:value="genSettingVal.uiType" :options="uiOptions" />
+          <n-select style="width: 180px;" v-model:value="genSettingVal.tempType" :options="tempOptions" />
+          <NButton @click="gencode">生成代码</NButton>
         </NSpace>
       </NSpace>
     </n-card>

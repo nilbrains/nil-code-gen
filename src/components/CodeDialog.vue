@@ -64,18 +64,12 @@ function initCode() {
 
 <template>
   <n-modal :show="model.dialog.showed">
-    <n-card
-      style="width: 80%; height: 100vh"
-      :title="model.dialog.title"
-      size="huge"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-    >
+    <n-card style="width: 80%; height: 100vh" :title="model.dialog.title" size="huge" :bordered="false" role="dialog"
+      aria-modal="true">
       <template #header-extra>
         <NSpace>
-          <NButton @click="model.save" type="success">确定</NButton>
-          <NButton @click="model.close" type="error">关掉</NButton>
+          <NButton v-if="model.dialog.buttons?.indexOf('save') != -1" @click="model.save" type="success">确定</NButton>
+          <NButton v-if="model.dialog.buttons?.indexOf('close') != -1" @click="model.close" type="error">关掉</NButton>
         </NSpace>
       </template>
       <div id="code-container" style="height: 100%"></div>

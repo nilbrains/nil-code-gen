@@ -7,14 +7,16 @@ export function useCodeDialog() {
     code: "",
     language: "",
     readOnly: false,
+    buttons: ["close"]
   });
 
-  function open({ title, code, language, readOnly = false }) {
+  function open({ title, code, language, readOnly = false, buttons = ["close"] }) {
     dialog.showed = true;
     dialog.code = code;
     dialog.title = title;
     dialog.language = language || "";
     dialog.readOnly = readOnly;
+    dialog.buttons = buttons;
 
     listener["openEnd"] && listener["openEnd"]();
   }
@@ -30,9 +32,9 @@ export function useCodeDialog() {
   }
 
   const listener = reactive({
-    openEnd: () => {},
-    closeEnd: () => {},
-    saveEnd: () => {},
+    openEnd: () => { },
+    closeEnd: () => { },
+    saveEnd: () => { },
   });
 
   return { dialog, open, close, save, listener };
