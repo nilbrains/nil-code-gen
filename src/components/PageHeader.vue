@@ -7,7 +7,7 @@ import config from "../../package.json";
   <n-space class="page-header" align="center" justify="space-between">
     <n-space align="center">
       <n-avatar :size="50" object-fit="contain" :src="logo" color="transparent" />
-      <h1 class="title">代码生成器
+      <h1 class="title">
         <div class="version"> {{ config.version }} </div>
       </h1>
     </n-space>

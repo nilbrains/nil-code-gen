@@ -1,21 +1,24 @@
 <script setup>
 import PageHeader from './components/PageHeader.vue';
-
+import WaterMask from "@/components/WaterMask.vue";
 </script>
 
 <template>
   <n-message-provider>
-    <n-space vertical class="code-app">
-      <n-layout>
-        <n-layout-header>
-          <PageHeader />
-        </n-layout-header>
-        <n-layout-content content-style="padding: 32px;">
-          <RouterView />
-        </n-layout-content>
-        <n-layout-footer></n-layout-footer>
-      </n-layout>
-    </n-space>
+    <WaterMask text="大家艰苦一下，一切都会有的" fullwindows :font-size="16" :line-height="16" :width="384" :height="384"
+      :x-offset="12" :y-offset="60" :rotate="-15">
+      <n-space vertical class="code-app">
+        <n-layout>
+          <n-layout-header>
+            <PageHeader />
+          </n-layout-header>
+          <n-layout-content content-style="padding: 32px;">
+            <RouterView />
+          </n-layout-content>
+          <n-layout-footer></n-layout-footer>
+        </n-layout>
+      </n-space>
+    </WaterMask>
   </n-message-provider>
 </template>
 
