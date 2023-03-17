@@ -4,7 +4,7 @@ console.log("================ test start ================");
 console.time("test start")
 
 // YOUR CODE
-main()
+main() 
 
 console.timeEnd("test start")
 console.log("================ test end ================")

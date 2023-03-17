@@ -9,6 +9,11 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-git"
+    }
+  },
   "dependencies": {
     "ejs": "^3.1.9",
     "monaco-editor": "^0.36.1",
