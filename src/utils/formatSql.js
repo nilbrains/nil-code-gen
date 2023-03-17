@@ -13,19 +13,19 @@ export function formatSql(sql) {
 
     // 正则 /CREATE TABLE '(.*?)'/
 
-    const tableName = sql.match(/CREATE TABLE \'(.*?)\'/);
+    const tableName = sql.match(/CREATE TABLE \`(.*?)\`/);
     if (tableName == null) {
         throw new Error("未找到表名称");
     }
     _body.tableName = tableName[1];
 
-    const primaryKey = sql.match(/PRIMARY KEY \('(.*?)'\)/);
+    const primaryKey = sql.match(/PRIMARY KEY \(\`(.*?)\`\)/);
     if (primaryKey == null) {
         throw new Error("未找到表主键");
     }
     _body.primaryKey = primaryKey[1];
 
-    const varsSql = sql.match(/' \((.*?) PRIMARY KEY/);
+    const varsSql = sql.match(/\` \((.*?) PRIMARY KEY/);
 
     if (varsSql == null || varsSql == "") {
         throw new Error("SQL不正确");
@@ -35,12 +35,14 @@ export function formatSql(sql) {
 
     const _vars = []
     varsSqls.forEach(item => {
-        const field = item.trim()?.match(/^'(.*?)' \w+(\(?(\d+)?\)?)/);
+        const field = item.trim()?.match(/^`(.*?)` \w+(\(?(\d+)?\)?)/);
         const comment = item.trim()?.match(/COMMENT '(.*?)'$/);
-        _vars.push({
-            field: field ? field[1] : '',
-            comment: (comment ? comment[1] : '')
-        })
+        if (field) {
+            _vars.push({
+                field: field ? field[1] : '',
+                comment: (comment ? comment[1] : '')
+            })
+        }
     });
     _body.vars = _vars;
     return _body

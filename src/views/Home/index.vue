@@ -27,23 +27,30 @@ function openSqlModel() {
 }
 
 codeDialog.listener.saveEnd = (sql) => {
-  console.log(sql);
+  // console.log(sql);
+
   if (sql.trim() === "") {
     return;
   }
-  const sqlBody = getFormatSql(sql);
 
-  console.log(sqlBody);
-  if (sqlBody.vars) {
-    const _temp = [];
-    sqlBody.vars.forEach((it) => {
-      _temp.push({
-        field: it.field || "",
-        label: it.comment || "",
-        type: "string",
+  try {
+    const sqlBody = getFormatSql(sql);
+
+    console.log(sqlBody);
+    if (sqlBody.vars) {
+      const _temp = [];
+      sqlBody.vars.forEach((it) => {
+        _temp.push({
+          field: it.field || "",
+          label: it.comment || "",
+          type: "string",
+        });
       });
-    });
-    data.value = _temp;
+      data.value = _temp;
+    }
+  } catch (error) {
+    console.error(error);
+    message.error(error ? error.message : "遇到一个未知的错误")
   }
 }
 
@@ -72,19 +79,22 @@ function gencode() {
 
 <template>
   <div class="">
-    <n-card style="margin-bottom: 16px">
-      <NSpace justify="space-between">
-        <NSpace>
-          <NButton @click="openSqlModel">导入建表SQL</NButton>
-        </NSpace>
+    <n-affix :trigger-top="0" position="fixed" style="z-index: 10;width: 100%;left: 0;">
+      <n-card style="margin-bottom: 16px">
+        <NSpace justify="space-between">
+          <NSpace>
+            <NButton @click="openSqlModel">导入建表SQL</NButton>
+          </NSpace>
 
-        <NSpace>
-          <n-select style="width: 180px;" v-model:value="genSettingVal.uiType" :options="uiOptions" />
-          <n-select style="width: 180px;" v-model:value="genSettingVal.tempType" :options="tempOptions" />
-          <NButton @click="gencode">生成代码</NButton>
+          <NSpace>
+            <n-select style="width: 180px;" v-model:value="genSettingVal.uiType" :options="uiOptions" />
+            <n-select style="width: 180px;" v-model:value="genSettingVal.tempType" :options="tempOptions" />
+            <NButton @click="gencode">生成代码</NButton>
+          </NSpace>
         </NSpace>
-      </NSpace>
-    </n-card>
+      </n-card>
+    </n-affix>
+
     <n-card>
       <n-data-table :columns="columns" :data="data" :bordered="false" />
 
