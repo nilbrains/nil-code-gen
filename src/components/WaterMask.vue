@@ -1,7 +1,7 @@
 <!-- 我是水印 -->
 <script setup>
 
-import { defineProps } from "vue";
+import { defineProps, watchEffect } from "vue";
 
 const prop = defineProps({
     fullwindows: Boolean,
@@ -142,7 +142,12 @@ function init() {
         base64UrlRef.value = canvas.toDataURL()
     }
 }
-init()
+// init()
+
+// 这里需要监听一下
+watchEffect(() => {
+    init()
+})
 </script>
 
 <template>

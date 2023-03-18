@@ -1,12 +1,12 @@
 <script setup>
 import PageHeader from './components/PageHeader.vue';
-import WaterMask from "@/components/WaterMask.vue";
+// import WaterMask from "@/components/WaterMask.vue";
 </script>
 
 <template>
   <n-message-provider>
-    <WaterMask text="大家艰苦一下，一切都会有的" fullwindows :font-size="16" :line-height="16" :width="384" :height="384"
-      :x-offset="12" :y-offset="60" :rotate="-15">
+    <!-- <WaterMask text="啊实打实的" fullwindows :font-size="16" :line-height="16" :width="384" :height="384"
+      :x-offset="12" :y-offset="60" :rotate="-15"> -->
       <n-space vertical class="code-app">
         <n-layout>
           <n-layout-header>
@@ -18,7 +18,7 @@ import WaterMask from "@/components/WaterMask.vue";
           <n-layout-footer></n-layout-footer>
         </n-layout>
       </n-space>
-    </WaterMask>
+    <!-- </WaterMask> -->
   </n-message-provider>
 </template>
 
