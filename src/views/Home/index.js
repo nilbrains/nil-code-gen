@@ -2,31 +2,30 @@ import { NButton, NInput, NSelect, NSpace } from "naive-ui";
 import { h, ref } from "vue";
 
 import { formatSql } from "../../utils/index";
-import ejs from "ejs"
-import prettier from 'prettier/standalone';
-import parserHtml from 'prettier/parser-html';
+import ejs from "ejs";
+import prettier from "prettier/standalone";
+import parserHtml from "prettier/parser-html";
 
 import * as template from "@/template";
 
-
 const typeOptions = [
   {
-    label: '字符串',
-    value: 'string'
+    label: "字符串",
+    value: "string",
   },
   {
-    label: '选择框',
-    value: 'select'
+    label: "选择框",
+    value: "select",
   },
   {
-    label: '日期',
-    value: 'date'
+    label: "日期",
+    value: "date",
   },
   {
-    label: '日期时间',
-    value: 'datetime'
+    label: "日期时间",
+    value: "datetime",
   },
-]
+];
 
 const createColumns = ({ moveTop, moveBottom, remove }) => {
   return [
@@ -77,33 +76,33 @@ const createColumns = ({ moveTop, moveBottom, remove }) => {
                 NButton,
                 {
                   onClick: () => {
-                    moveTop(index)
-                  }
+                    moveTop(index);
+                  },
                 },
-                { default: () => '上移' }
+                { default: () => "上移" }
               ),
               h(
                 NButton,
                 {
                   onClick: () => {
-                    moveBottom(index)
-                  }
+                    moveBottom(index);
+                  },
                 },
-                { default: () => '下移' }
+                { default: () => "下移" }
               ),
               h(
                 NButton,
                 {
                   onClick: () => {
-                    remove(index)
-                  }
+                    remove(index);
+                  },
                 },
-                { default: () => '移除' }
-              )
-            ]
+                { default: () => "移除" }
+              ),
+            ],
           }
-        )
-      }
+        );
+      },
     },
   ];
 };
@@ -128,13 +127,14 @@ export function useHomeTable() {
   }
 
   function remove(index) {
-    data.value.splice(index, 1)
+    data.value.splice(index, 1);
   }
 
   const columns = createColumns({
-    moveTop, moveBottom, remove
+    moveTop,
+    moveBottom,
+    remove,
   });
-
 
   function addEmptyRow() {
     data.value?.push({
@@ -156,59 +156,61 @@ export function useHomeUploadSql() {
     return formatSql(sql);
   }
 
-
-
   return {
     getFormatSql,
   };
 }
 
-
-
 const uiOptions = [
   {
-    label: 'Element Plus',
-    value: 'element-plus'
+    label: "Element Plus",
+    value: "element-plus",
   },
-]
+];
 
 const tempOptions = [
   {
-    label: '表格',
-    value: 'table-me'
+    label: "表格",
+    value: "table-me",
   },
   {
-    label: '表单',
-    value: 'form-me'
+    label: "表单",
+    value: "form-me",
   },
-]
+];
 
 export function useHomeGenCode() {
   const genSettingVal = reactive({
     uiType: "element-plus",
-    tempType: "table-me"
-  })
+    tempType: "table-me",
+  });
 
   function genCodeForTemp(data) {
     // console.log(data);
-    if (genSettingVal.uiType === "element-plus" && genSettingVal.tempType === "table-me") {
-      let code = ejs.render(template.elementPlusTableMe, { data })
+    if (
+      genSettingVal.uiType === "element-plus" &&
+      genSettingVal.tempType === "table-me"
+    ) {
+      let code = ejs.render(template.elementPlusTableMe, { data });
       // console.log(code);
       code = prettier.format(code, {
         parser: "html",
-        plugins: [parserHtml]
-      })
+        plugins: [parserHtml],
+      });
       return code;
-    } else if (genSettingVal.uiType === "element-plus" && genSettingVal.tempType === "form-me") {
-      let code = ejs.render(template.elementPlusFormMe, { data })
+    } else if (
+      genSettingVal.uiType === "element-plus" &&
+      genSettingVal.tempType === "form-me"
+    ) {
+      let code = ejs.render(template.elementPlusFormMe, { data });
       // console.log(code);
       code = prettier.format(code, {
         parser: "html",
-        plugins: [parserHtml]
-      })
+        plugins: [parserHtml],
+      });
       return code;
     } else {
-      throw new Error("未找到模板")
+      throw new Error("未找到模板");
     }
   }
 
@@ -216,6 +218,79 @@ export function useHomeGenCode() {
     uiOptions,
     tempOptions,
     genSettingVal,
-    genCodeForTemp
+    genCodeForTemp,
+  };
+}
+
+const menuOptions = [
+  {
+    label: "打开SQL文件",
+    key: "open",
+  },
+];
+
+const menuOptionMethod = {
+  async open(message,spaceStore) {
+    const loading = message.loading("正在打开文件", { duration: 0 });
+    if (!window.showOpenFilePicker) {
+      loading?.destroy()
+      message.error("这个浏览器好像不支持打开文件哎")
+    }
+    const fileHandle = await window.showOpenFilePicker({
+      excludeAcceptAllOption: false,
+      types: [
+        {
+          description: 'Sql数据库文件',
+          accept: {
+            'text/plain': ['.sql'],
+          },
+        },
+      ],
+    });
+    const file = await fileHandle[0].getFile();
+    const reader = new FileReader();
+    reader.onload = () => {
+      loading?.destroy()
+      const sqlFile = reader.result
+        // 去回车
+        .replace(/[\r\n]/g, "")
+        // 去空格
+        .replace(/\s+/g, ' ')
+        .trim()
+      const sqlMatch = sqlFile.match(/CREATE TABLE [\s\S][^;]*;/g)
+      const _ = []
+      if (sqlMatch) {
+        console.log(sqlMatch);
+        sqlMatch.forEach(it => {
+          _.push({
+            label: it.match(/CREATE TABLE \`(.*?)\`/)[1],
+            value: it.match(/CREATE TABLE \`(.*?)\`/)[1],
+            sql: it,
+          })
+        })
+        console.log(_);
+        spaceStore.sqls = _;
+      }
+    };
+    reader.readAsText(file);
+  },
+  save(message) {
+    console.log("save....");
+  },
+};
+
+export function useMenuOption(message,spaceStore) {
+  function handleSelect(key) {
+    console.log("menu select key == > " + String(key));
+    try {
+      menuOptionMethod[key](message,spaceStore);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return {
+    menuOptions,
+    handleSelect,
   };
 }

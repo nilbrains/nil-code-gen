@@ -1,12 +1,13 @@
 <script setup>
-import { provide } from "vue";
+import { provide, ref } from "vue";
 import CodeDialog from "../../components/CodeDialog.vue";
-import { useHomeGenCode, useHomeTable, useHomeUploadSql } from ".";
+import { useHomeGenCode, useHomeTable, useHomeUploadSql, useMenuOption } from ".";
 import { useCodeDialog } from "../../hooks/codeDialog";
 import { useMessage } from "naive-ui";
+import { useSpaceStore } from "@/stores/space.js";
 
-const message = useMessage()
-
+const message = useMessage();
+const spaceStore =  useSpaceStore();
 // 表格
 const { columns, data, addEmptyRow } = useHomeTable();
 
@@ -22,21 +23,17 @@ function openSqlModel() {
     title: "SQL创建语句",
     code: "",
     language: "sql",
-    buttons: ["save", "close"]
-  })
+    buttons: ["save", "close"],
+  });
 }
 
-codeDialog.listener.saveEnd = (sql) => {
-  // console.log(sql);
-
+function sql2table(sql) {
   if (sql.trim() === "") {
     return;
   }
-
   try {
     const sqlBody = getFormatSql(sql);
-
-    console.log(sqlBody);
+    // console.log(sqlBody);
     if (sqlBody.vars) {
       const _temp = [];
       sqlBody.vars.forEach((it) => {
@@ -50,45 +47,84 @@ codeDialog.listener.saveEnd = (sql) => {
     }
   } catch (error) {
     console.error(error);
-    message.error(error ? error.message : "遇到一个未知的错误")
+    message.error(error ? error.message : "遇到一个未知的错误");
   }
 }
 
-const { uiOptions, genSettingVal, tempOptions, genCodeForTemp } = useHomeGenCode()
+codeDialog.listener.saveEnd = (sql) => {
+  // console.log(sql);
+  sql2table(sql)
+};
 
+const { uiOptions, genSettingVal, tempOptions, genCodeForTemp } =
+  useHomeGenCode();
 
 function gencode() {
-  // 
-
+  //
   try {
-    const code = genCodeForTemp(data.value)
+    const code = genCodeForTemp(data.value);
     // console.log(code);
     codeDialog.open({
       title: "代码预览",
       code: code,
       language: "html",
-      buttons: ["close"]
-    })
+      buttons: ["close"],
+    });
   } catch (error) {
     console.error(error);
-    message.error(error ? error.message : "遇到一个未知的错误")
+    message.error(error ? error.message : "遇到一个未知的错误");
   }
+}
 
+// 菜单选项
+const { menuOptions, handleSelect }  = useMenuOption(message,spaceStore)
+
+const nowSelectSql = ref("")
+
+function  handleNowSelectSql(key,option) {
+  // console.log(option.sql);
+  sql2table(option.sql)
 }
 </script>
 
 <template>
   <div class="">
-    <n-affix :trigger-top="0" position="fixed" style="z-index: 10;width: 100%;left: 0;">
+    <n-affix
+      :trigger-top="0"
+      position="fixed"
+      style="z-index: 10; width: 100%; left: 0"
+    >
       <n-card style="margin-bottom: 16px">
         <NSpace justify="space-between">
           <NSpace>
-            <NButton @click="openSqlModel">导入建表SQL</NButton>
+            <n-dropdown
+              trigger="hover"
+              :options="menuOptions"
+              @select="handleSelect"
+            >
+              <n-button>菜单</n-button>
+            </n-dropdown>
+            <NButton @click="openSqlModel">输入单表SQL</NButton>
+            <n-select
+              style="width: 180px"
+              v-if="spaceStore.sqls.length > 0"
+              v-model:value="nowSelectSql"
+              @update:value="handleNowSelectSql"
+              :options="spaceStore.sqls"
+            />
           </NSpace>
 
           <NSpace>
-            <n-select style="width: 180px;" v-model:value="genSettingVal.uiType" :options="uiOptions" />
-            <n-select style="width: 180px;" v-model:value="genSettingVal.tempType" :options="tempOptions" />
+            <n-select
+              style="width: 180px"
+              v-model:value="genSettingVal.uiType"
+              :options="uiOptions"
+            />
+            <n-select
+              style="width: 180px"
+              v-model:value="genSettingVal.tempType"
+              :options="tempOptions"
+            />
             <NButton @click="gencode">生成代码</NButton>
           </NSpace>
         </NSpace>
