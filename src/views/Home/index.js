@@ -11,23 +11,23 @@ import * as template from "@/template";
 const typeOptions = [
   {
     label: "字符串",
-    value: "string",
+    value: "string"
   },
   {
     label: "选择框",
-    value: "select",
+    value: "select"
   },
   {
     label: "日期",
-    value: "date",
+    value: "date"
   },
   {
     label: "日期时间",
-    value: "datetime",
-  },
+    value: "datetime"
+  }
 ];
 
-const createColumns = ({ moveTop, moveBottom, remove }) => {
+const createColumns = ({ moveTop, moveBottom, remove, setting }) => {
   return [
     {
       title: "字段名",
@@ -36,9 +36,9 @@ const createColumns = ({ moveTop, moveBottom, remove }) => {
       render(row) {
         return h(NInput, {
           value: row?.field,
-          onUpdateValue: (e) => (row.field = e),
+          onUpdateValue: (e) => (row.field = e)
         });
-      },
+      }
     },
     {
       title: "标题",
@@ -47,9 +47,9 @@ const createColumns = ({ moveTop, moveBottom, remove }) => {
       render(row) {
         return h(NInput, {
           value: row?.label,
-          onUpdateValue: (e) => (row.label = e),
+          onUpdateValue: (e) => (row.label = e)
         });
-      },
+      }
     },
     {
       title: "类型",
@@ -59,9 +59,9 @@ const createColumns = ({ moveTop, moveBottom, remove }) => {
         return h(NSelect, {
           options: typeOptions,
           value: row?.type,
-          onUpdateValue: (e) => (row.type = e),
+          onUpdateValue: (e) => (row.type = e)
         });
-      },
+      }
     },
     {
       title: "操作",
@@ -77,7 +77,7 @@ const createColumns = ({ moveTop, moveBottom, remove }) => {
                 {
                   onClick: () => {
                     moveTop(index);
-                  },
+                  }
                 },
                 { default: () => "上移" }
               ),
@@ -86,7 +86,7 @@ const createColumns = ({ moveTop, moveBottom, remove }) => {
                 {
                   onClick: () => {
                     moveBottom(index);
-                  },
+                  }
                 },
                 { default: () => "下移" }
               ),
@@ -95,19 +95,31 @@ const createColumns = ({ moveTop, moveBottom, remove }) => {
                 {
                   onClick: () => {
                     remove(index);
-                  },
+                  }
                 },
                 { default: () => "移除" }
               ),
-            ],
+              h(
+                NButton,
+                {
+                  onClick: () => {
+                    setting(row, index);
+                  }
+                },
+                { default: () => "配置" }
+              )
+            ]
           }
         );
-      },
-    },
+      }
+    }
   ];
 };
 
-export function useHomeTable() {
+export function useHomeTable({
+                               setting = () => {
+                               }
+                             }) {
   const data = ref([]);
 
   function moveTop(index) {
@@ -134,20 +146,21 @@ export function useHomeTable() {
     moveTop,
     moveBottom,
     remove,
+    setting
   });
 
   function addEmptyRow() {
     data.value?.push({
       field: "",
       label: "",
-      type: "string",
+      type: "string"
     });
   }
 
   return {
     columns,
     data,
-    addEmptyRow,
+    addEmptyRow
   };
 }
 
@@ -157,32 +170,32 @@ export function useHomeUploadSql() {
   }
 
   return {
-    getFormatSql,
+    getFormatSql
   };
 }
 
 const uiOptions = [
   {
     label: "Element Plus",
-    value: "element-plus",
-  },
+    value: "element-plus"
+  }
 ];
 
 const tempOptions = [
   {
     label: "表格",
-    value: "table-me",
+    value: "table-me"
   },
   {
     label: "表单",
-    value: "form-me",
-  },
+    value: "form-me"
+  }
 ];
 
 export function useHomeGenCode() {
   const genSettingVal = reactive({
     uiType: "element-plus",
-    tempType: "table-me",
+    tempType: "table-me"
   });
 
   function genCodeForTemp(data) {
@@ -195,7 +208,7 @@ export function useHomeGenCode() {
       // console.log(code);
       code = prettier.format(code, {
         parser: "html",
-        plugins: [parserHtml],
+        plugins: [parserHtml]
       });
       return code;
     } else if (
@@ -206,7 +219,7 @@ export function useHomeGenCode() {
       // console.log(code);
       code = prettier.format(code, {
         parser: "html",
-        plugins: [parserHtml],
+        plugins: [parserHtml]
       });
       return code;
     } else {
@@ -218,56 +231,56 @@ export function useHomeGenCode() {
     uiOptions,
     tempOptions,
     genSettingVal,
-    genCodeForTemp,
+    genCodeForTemp
   };
 }
 
 const menuOptions = [
   {
     label: "打开SQL文件",
-    key: "open",
-  },
+    key: "open"
+  }
 ];
 
 const menuOptionMethod = {
-  async open(message,spaceStore) {
+  async open(message, spaceStore) {
     const loading = message.loading("正在打开文件", { duration: 0 });
     if (!window.showOpenFilePicker) {
-      loading?.destroy()
-      message.error("这个浏览器好像不支持打开文件哎")
+      loading?.destroy();
+      message.error("这个浏览器好像不支持打开文件哎");
     }
     const fileHandle = await window.showOpenFilePicker({
       excludeAcceptAllOption: false,
       types: [
         {
-          description: 'Sql数据库文件',
+          description: "Sql数据库文件",
           accept: {
-            'text/plain': ['.sql'],
-          },
-        },
-      ],
+            "text/plain": [".sql"]
+          }
+        }
+      ]
     });
     const file = await fileHandle[0].getFile();
     const reader = new FileReader();
     reader.onload = () => {
-      loading?.destroy()
+      loading?.destroy();
       const sqlFile = reader.result
         // 去回车
         .replace(/[\r\n]/g, "")
         // 去空格
-        .replace(/\s+/g, ' ')
-        .trim()
-      const sqlMatch = sqlFile.match(/CREATE TABLE [\s\S][^;]*;/g)
-      const _ = []
+        .replace(/\s+/g, " ")
+        .trim();
+      const sqlMatch = sqlFile.match(/CREATE TABLE [\s\S][^;]*;/g);
+      const _ = [];
       if (sqlMatch) {
         console.log(sqlMatch);
         sqlMatch.forEach(it => {
           _.push({
             label: it.match(/CREATE TABLE \`(.*?)\`/)[1],
             value: it.match(/CREATE TABLE \`(.*?)\`/)[1],
-            sql: it,
-          })
-        })
+            sql: it
+          });
+        });
         console.log(_);
         spaceStore.sqls = _;
       }
@@ -276,14 +289,14 @@ const menuOptionMethod = {
   },
   save(message) {
     console.log("save....");
-  },
+  }
 };
 
-export function useMenuOption(message,spaceStore) {
+export function useMenuOption(message, spaceStore) {
   function handleSelect(key) {
     console.log("menu select key == > " + String(key));
     try {
-      menuOptionMethod[key](message,spaceStore);
+      menuOptionMethod[key](message, spaceStore);
     } catch (error) {
       console.error(error);
     }
@@ -291,6 +304,6 @@ export function useMenuOption(message,spaceStore) {
 
   return {
     menuOptions,
-    handleSelect,
+    handleSelect
   };
 }

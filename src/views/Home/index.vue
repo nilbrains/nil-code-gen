@@ -5,17 +5,38 @@ import { useHomeGenCode, useHomeTable, useHomeUploadSql, useMenuOption } from ".
 import { useCodeDialog } from "../../hooks/codeDialog";
 import { useMessage } from "naive-ui";
 import { useSpaceStore } from "@/stores/space.js";
+import { useSettingDialog } from "@/hooks/settingDialog.js";
+import Setting from "@/views/Home/Setting.vue";
 
 const message = useMessage();
 const spaceStore =  useSpaceStore();
 // 表格
-const { columns, data, addEmptyRow } = useHomeTable();
+const { columns, data, addEmptyRow } = useHomeTable({
+  setting: openSetting
+});
+
+function openSetting(row, index) {
+  console.log(row, index);
+  settingDialog.open(genSettingVal.uiType,row,index);
+}
 
 const { getFormatSql } = useHomeUploadSql();
 
 const codeDialog = useCodeDialog();
 
 provide("CODE-DIALOG", codeDialog);
+
+const settingDialog = useSettingDialog()
+
+provide("SETTING-DIALOG", settingDialog);
+
+settingDialog.listener.saveEnd = (config, index) => {
+  // console.log(sql);
+  if (index> -1) {
+    data.value[index].config = config;
+  }
+};
+
 
 // 导入sql
 function openSqlModel() {
@@ -138,5 +159,6 @@ function  handleNowSelectSql(key,option) {
     </n-card>
 
     <CodeDialog />
+    <Setting />
   </div>
 </template>
