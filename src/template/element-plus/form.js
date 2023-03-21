@@ -24,7 +24,7 @@ const formData = inject("NIL_FORM");
       class="nil-dialog-scrollbar"
     >
       <div class="nil-form">
-        
+      <el-form ref="form" :model="formData.form.items" label-width="120px">
       <% for(var i = 0; i < data.length; i ++){ %>
         <el-form-item label="<%=data[i].label%>" >
         <% if(data[i].type == "date") { %>
@@ -40,7 +40,7 @@ const formData = inject("NIL_FORM");
         <% } %>
         </el-form-item>
       <% } %>
-
+        </el-form>
       </div>
     </el-scrollbar>
     <template #footer>

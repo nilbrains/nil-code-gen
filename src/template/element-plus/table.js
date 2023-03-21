@@ -61,9 +61,14 @@ export const elementPlusTableMe = `
   //   };
   // ========== 表单 结束 ==========
 
+  // 添加
+  function handelAdd() {
+    console.log("handelAdd.....")
+  }
+
   // 修改
   function handelChange (row) {
-    console.log(row)
+    console.log("handelChange.....", row)
   }
   </script>
   
@@ -74,7 +79,7 @@ export const elementPlusTableMe = `
       </nil-page>
       <nil-page title="列表">
         <template #option>
-          <el-button type="primary" icon="EiPlus" >添加</el-button>
+          <el-button type="primary" icon="EiPlus"  @click="handelAdd">添加</el-button>
           <nil-hide />
         </template>
         <nil-table>
