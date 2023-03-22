@@ -1,31 +1,5 @@
 import { reactive } from "vue";
-import * as uiConfig from "@/config/index";
-
-function genFormData(uiType, row) {
-  const rowType = row?.type || "string";
-  const _form_data = {};
-  const _form = [];
-  let _config = {};
-  if (uiType === "element-plus") {
-    if (rowType === "string") {
-      _config = uiConfig.elementPlusString;
-    } else if (rowType === "select") {
-      _config = uiConfig.elementPlusSelect;
-    } else if (rowType === "date") {
-      _config = uiConfig.elementPlusDate;
-    } else {
-      _config = uiConfig.elementPlusDefault;
-    }
-  }
-  if (_config) {
-    Object.keys(_config).forEach(it => {
-      _form_data[it] = _config[it]?.default || "";
-      _form.push(_config[it]);
-    });
-  }
-  return [_form, _form_data];
-}
-
+import { genFormData } from "@/config/index";
 
 export function useSettingDialog() {
   const dialog = reactive({
@@ -35,13 +9,13 @@ export function useSettingDialog() {
     formData: {}
   });
 
-  function open(uiType, row, index) {
-    dialog.showed = true;
+  function open(uiType, row, index ,showed = true) {
+    dialog.showed = showed;
     dialog.index = index;
-    // console.log(uiType + JSON.stringify(row));
+    console.log(uiType + JSON.stringify(row) + " ---- " + index);
     // 获取表单内容
-    if ("config" in row) {
-      //   是否存在 config
+    console.log("\"config\" in row && !row['edited'] === >" + "config" in row && !row['edited']);
+    if ("config" in row && !row['edited']) {
       [dialog.form, {}] = genFormData(uiType, row);
       dialog.formData = row.config || {};
     } else {

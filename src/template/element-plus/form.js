@@ -28,15 +28,21 @@ const formData = inject("NIL_FORM");
       <% for(var i = 0; i < data.length; i ++){ %>
         <el-form-item label="<%=data[i].label%>" >
         <% if(data[i].type == "date") { %>
-          <el-date-picker v-model="formData.form.items.<%=data[i].field%>" type="date" placeholder="请选择<%=data[i].label%>" :disabled="formData.form.loading"/>
+          <el-date-picker v-model="formData.form.items.<%=data[i].field%>" type="date" :disabled="formData.form.loading" <%- data[i].configFlat || '' %> />
           <% } else if (data[i].type == "datetime") { %>
-          <el-date-picker v-model="formData.form.items.<%=data[i].field%>" type="datetime" placeholder="请选择<%=data[i].label%>" :disabled="formData.form.loading"/>
+          <el-date-picker v-model="formData.form.items.<%=data[i].field%>" type="datetime" :disabled="formData.form.loading" <%- data[i].configFlat || '' %> />
           <% } else if (data[i].type == "select") { %>
-          <el-select v-model="formData.form.items.<%=data[i].field%>" placeholder="请选择<%=data[i].label%>" :disabled="formData.form.loading">
+          <el-select v-model="formData.form.items.<%=data[i].field%>" :disabled="formData.form.loading" <%- data[i].configFlat || '' %> >
+            <% if (data[i].config?.options && data[i].config?.options?.length > 0) {  
+              for(var j = 0; j < data[i].config?.options?.length; j ++){
+            %>
+            <el-option label="<%= data[i].config?.options[j]?.key %>" value="<%= data[i].config?.options[j]?.value %>" />
+            <% } } else {%>
             <el-option label="默认" value="0" />
+            <% } %>
           </el-select>
         <% } else { %>
-          <el-input v-model="formData.form.items.<%=data[i].field%>" placeholder="请输入<%=data[i].label%>" :disabled="formData.form.loading"/> 
+          <el-input v-model="formData.form.items.<%=data[i].field%>" :disabled="formData.form.loading"  <%- data[i].configFlat || '' %> /> 
         <% } %>
         </el-form-item>
       <% } %>

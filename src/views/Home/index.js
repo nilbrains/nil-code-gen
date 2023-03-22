@@ -7,6 +7,7 @@ import prettier from "prettier/standalone";
 import parserHtml from "prettier/parser-html";
 
 import * as template from "@/template";
+import { elementPlusString, getConfigData } from "@/config/index.js";
 
 const typeOptions = [
   {
@@ -27,7 +28,7 @@ const typeOptions = [
   }
 ];
 
-const createColumns = ({ moveTop, moveBottom, remove, setting }) => {
+const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => {
   return [
     {
       title: "字段名",
@@ -55,11 +56,15 @@ const createColumns = ({ moveTop, moveBottom, remove, setting }) => {
       title: "类型",
       key: "type",
       width: "20%",
-      render(row) {
+      render(row,index) {
         return h(NSelect, {
           options: typeOptions,
           value: row?.type,
-          onUpdateValue: (e) => (row.type = e)
+          onUpdateValue: (e) => {
+            row.type = e;
+            row.edited = true;
+            typeChange(row,index)
+          }
         });
       }
     },
@@ -118,7 +123,8 @@ const createColumns = ({ moveTop, moveBottom, remove, setting }) => {
 
 export function useHomeTable({
                                setting = () => {
-                               }
+                               },
+                               typeChange = () => {}
                              }) {
   const data = ref([]);
 
@@ -146,14 +152,17 @@ export function useHomeTable({
     moveTop,
     moveBottom,
     remove,
-    setting
+    setting,
+    typeChange
   });
 
   function addEmptyRow() {
+
     data.value?.push({
       field: "",
       label: "",
-      type: "string"
+      type: "string",
+      config: getConfigData(elementPlusString)
     });
   }
 
@@ -200,6 +209,21 @@ export function useHomeGenCode() {
 
   function genCodeForTemp(data) {
     // console.log(data);
+    // 转换data
+
+    if (data) {
+      data.forEach(item => {
+        item.configFlat = Object.keys(item.config).map(it => {
+          if (it === "options") return;
+          if (typeof item.config[it] === "boolean") {
+            return `:${it}="${String(item.config[it])}"`;
+          } else {
+            return `${it}="${item.config[it]}"`;
+          }
+        }).join(" ");
+      });
+    }
+
     if (
       genSettingVal.uiType === "element-plus" &&
       genSettingVal.tempType === "table-me"

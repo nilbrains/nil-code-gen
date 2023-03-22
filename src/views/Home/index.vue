@@ -2,22 +2,32 @@
 import { provide, ref } from "vue";
 import CodeDialog from "../../components/CodeDialog.vue";
 import { useHomeGenCode, useHomeTable, useHomeUploadSql, useMenuOption } from ".";
-import { useCodeDialog } from "../../hooks/codeDialog";
+import { useCodeDialog } from "@/hooks/codeDialog.js";
 import { useMessage } from "naive-ui";
 import { useSpaceStore } from "@/stores/space.js";
 import { useSettingDialog } from "@/hooks/settingDialog.js";
 import Setting from "@/views/Home/Setting.vue";
+import { elementPlusString, getConfigData } from "@/config/index.js";
 
 const message = useMessage();
 const spaceStore =  useSpaceStore();
 // 表格
 const { columns, data, addEmptyRow } = useHomeTable({
-  setting: openSetting
+  setting: openSetting,
+  typeChange: onTypeChange
 });
 
 function openSetting(row, index) {
   console.log(row, index);
   settingDialog.open(genSettingVal.uiType,row,index);
+  // 还原修改状态
+  row.edited = false;
+}
+
+function onTypeChange(row, index) {
+  console.log("onTypeChange .... ", JSON.stringify(row));
+  settingDialog.open(genSettingVal.uiType,row,index,false);
+  settingDialog.save()
 }
 
 const { getFormatSql } = useHomeUploadSql();
@@ -62,6 +72,7 @@ function sql2table(sql) {
           field: it.field || "",
           label: it.comment || "",
           type: "string",
+          config: getConfigData(elementPlusString)
         });
       });
       data.value = _temp;
