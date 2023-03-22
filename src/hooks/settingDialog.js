@@ -1,7 +1,5 @@
 import { reactive } from "vue";
 import * as uiConfig from "@/config/index";
-import { elementPlusDefault } from "@/config/index";
-
 
 function genFormData(uiType, row) {
   const rowType = row?.type || "string";
