@@ -1,4 +1,4 @@
-export const elementPlusDefault = {
+export const naiveDefault = {
   placeholder: {
     key: "placeholder",
     name: "占位文本",
@@ -6,7 +6,7 @@ export const elementPlusDefault = {
     render: "string",
   },
 };
-export const elementPlusString = {
+export const naiveString = {
   type: {
     key: "type",
     name: "显示类型",
@@ -19,15 +19,15 @@ export const elementPlusString = {
     default: "请输入文本",
     render: "string",
   },
-  "show-word-limit": {
-    key: "show-word-limit",
+  "show-count": {
+    key: "show-count",
     name: "统计字数",
     default: false,
     render: "switch",
   },
 };
 
-export const elementPlusSelect = {
+export const naiveSelect = {
   placeholder: {
     key: "placeholder",
     name: "占位文本",
@@ -42,7 +42,7 @@ export const elementPlusSelect = {
   },
 };
 
-export const elementPlusDate = {
+export const naiveDate = {
   placeholder: {
     key: "placeholder",
     name: "占位文本",
@@ -55,12 +55,6 @@ export const elementPlusDate = {
     default: "date",
     render: "string",
   },
-  format: {
-    key: "format",
-    name: "显示格式",
-    default: "YYYY-MM-DD",
-    render: "string",
-  },
   "value-format": {
     key: "value-format",
     name: "绑定格式",
@@ -69,7 +63,7 @@ export const elementPlusDate = {
   },
 };
 
-export const elementPlusDateTime = {
+export const naiveDateTime = {
   placeholder: {
     key: "placeholder",
     name: "占位文本",
@@ -79,13 +73,7 @@ export const elementPlusDateTime = {
   type: {
     key: "type",
     name: "类型",
-    default: "date",
-    render: "string",
-  },
-  format: {
-    key: "format",
-    name: "显示格式",
-    default: "YYYY-MM-DD HH:mm:ss",
+    default: "datetime",
     render: "string",
   },
   "value-format": {

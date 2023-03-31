@@ -20,6 +20,7 @@ export function useSettingDialog() {
       dialog.formData = row.config || {};
     } else {
       [dialog.form, dialog.formData] = genFormData(uiType, row);
+      console.log("dialog.formData == >" + dialog.formData);
     }
     listener["openEnd"] && listener["openEnd"]();
   }

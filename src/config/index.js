@@ -1,8 +1,10 @@
 import * as uiElementConfig from "@/config/element-plus/index.js";
+import * as uiNaiveConfig from "@/config/naive/index.js";
 
 export * from "@/config/element-plus/index.js";
 
 export function genFormData(uiType, row) {
+  console.log("uiType == > " + uiType);
   const rowType = row?.type || "string";
   const _form_data = {};
   const _form = [];
@@ -16,12 +18,24 @@ export function genFormData(uiType, row) {
       _config = uiElementConfig.elementPlusDate;
     } else if (rowType === "datetime") {
       _config = uiElementConfig.elementPlusDateTime;
-    }else {
+    } else {
       _config = uiElementConfig.elementPlusDefault;
+    }
+  } else if (uiType === "naive") {
+    if (rowType === "string") {
+      _config = uiNaiveConfig.naiveString;
+    } else if (rowType === "select") {
+      _config = uiNaiveConfig.naiveSelect;
+    } else if (rowType === "date") {
+      _config = uiNaiveConfig.naiveDate;
+    } else if (rowType === "datetime") {
+      _config = uiNaiveConfig.naiveDateTime;
+    } else {
+      _config = uiNaiveConfig.naiveDefault;
     }
   }
   if (_config) {
-    Object.keys(_config).forEach(it => {
+    Object.keys(_config).forEach((it) => {
       _form_data[it] = _config[it]?.default || "";
       _form.push(_config[it]);
     });
@@ -30,8 +44,8 @@ export function genFormData(uiType, row) {
 }
 
 export function getConfigData(config) {
-  const _form_data = {}
-  Object.keys(config).forEach(it => {
+  const _form_data = {};
+  Object.keys(config).forEach((it) => {
     _form_data[it] = config[it]?.default ?? "";
   });
   return _form_data;

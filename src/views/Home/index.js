@@ -187,6 +187,10 @@ const uiOptions = [
   {
     label: "Element Plus",
     value: "element-plus"
+  },
+  {
+    label: "Naive",
+    value: "naive"
   }
 ];
 
@@ -240,6 +244,17 @@ export function useHomeGenCode() {
       genSettingVal.tempType === "form-me"
     ) {
       let code = ejs.render(template.elementPlusFormMe, { data });
+      // console.log(code);
+      code = prettier.format(code, {
+        parser: "html",
+        plugins: [parserHtml]
+      });
+      return code;
+    } else if (
+      genSettingVal.uiType === "naive" &&
+      genSettingVal.tempType === "form-me"
+    ) {
+      let code = ejs.render(template.naiveFormMe, { data });
       // console.log(code);
       code = prettier.format(code, {
         parser: "html",
