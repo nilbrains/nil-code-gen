@@ -93,24 +93,19 @@ codeDialog.listener.saveEnd = (sql) => {
   sql2table(sql);
 };
 
-const { uiOptions, genSettingVal, tempOptions, genCodeForTemp } =
-  useHomeGenCode();
+const { uiOptions, genSettingVal, tempOptions } = useHomeGenCode();
 
 function gencode() {
-  //
-  try {
-    const code = genCodeForTemp(data.value);
-    // console.log(code);
-    codeDialog.open({
-      title: "代码预览",
-      code: code,
-      language: "html",
-      buttons: ["close"],
-    });
-  } catch (error) {
-    console.error(error);
-    message.error(error ? error.message : "遇到一个未知的错误");
-  }
+  // const code = genCodeForTemp(data.value);
+  // console.log(code);
+  codeDialog.open({
+    title: "代码预览",
+    code: "",
+    language: "html",
+    buttons: ["close"],
+    data: data.value,
+    temps: tempOptions[genSettingVal.uiType],
+  });
 }
 
 // 菜单选项
@@ -140,48 +135,37 @@ function handleUiOptions(key) {
 
 <template>
   <div class="">
-    <n-affix
-      :trigger-top="0"
-      position="fixed"
-      style="z-index: 10; width: 100%; left: 0"
-    >
-      <n-card style="margin-bottom: 16px">
-        <NSpace justify="space-between">
-          <NSpace>
-            <n-dropdown
-              trigger="hover"
-              :options="menuOptions"
-              @select="handleSelect"
-            >
-              <n-button>菜单</n-button>
-            </n-dropdown>
-            <NButton @click="openSqlModel">输入单表SQL</NButton>
-            <n-select
-              style="width: 180px"
-              v-if="spaceStore.sqls.length > 0"
-              v-model:value="nowSelectSql"
-              @update:value="handleNowSelectSql"
-              :options="spaceStore.sqls"
-            />
-          </NSpace>
-
-          <NSpace>
-            <n-select
-              style="width: 180px"
-              v-model:value="genSettingVal.uiType"
-              :options="uiOptions"
-              @update:value="handleUiOptions"
-            />
-            <n-select
-              style="width: 180px"
-              v-model:value="genSettingVal.tempType"
-              :options="tempOptions"
-            />
-            <NButton @click="gencode">生成代码</NButton>
-          </NSpace>
+    <n-card style="margin-bottom: 16px">
+      <NSpace justify="space-between">
+        <NSpace>
+          <n-dropdown
+            trigger="hover"
+            :options="menuOptions"
+            @select="handleSelect"
+          >
+            <n-button>菜单</n-button>
+          </n-dropdown>
+          <NButton @click="openSqlModel">输入单表SQL</NButton>
+          <n-select
+            style="width: 180px"
+            v-if="spaceStore.sqls.length > 0"
+            v-model:value="nowSelectSql"
+            @update:value="handleNowSelectSql"
+            :options="spaceStore.sqls"
+          />
         </NSpace>
-      </n-card>
-    </n-affix>
+
+        <NSpace>
+          <n-select
+            style="width: 180px"
+            v-model:value="genSettingVal.uiType"
+            :options="uiOptions"
+            @update:value="handleUiOptions"
+          />
+          <NButton @click="gencode">生成代码</NButton>
+        </NSpace>
+      </NSpace>
+    </n-card>
 
     <n-card>
       <n-data-table :columns="columns" :data="data" :bordered="false" />

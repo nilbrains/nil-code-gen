@@ -4,7 +4,9 @@ import { h, ref } from "vue";
 import { formatSql } from "../../utils/index";
 import ejs from "ejs";
 import prettier from "prettier/standalone";
-import parserHtml from "prettier/parser-html";
+import prettierHtml from "prettier/parser-html";
+import prettierbabel from "prettier/parser-babel";
+import prettierCss from "prettier/parser-postcss";
 
 import * as template from "@/template";
 import { elementPlusString, getConfigData } from "@/config/index.js";
@@ -12,23 +14,29 @@ import { elementPlusString, getConfigData } from "@/config/index.js";
 const typeOptions = [
   {
     label: "字符串",
-    value: "string"
+    value: "string",
   },
   {
     label: "选择框",
-    value: "select"
+    value: "select",
   },
   {
     label: "日期",
-    value: "date"
+    value: "date",
   },
   {
     label: "日期时间",
-    value: "datetime"
-  }
+    value: "datetime",
+  },
 ];
 
-const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => {
+const createColumns = ({
+  moveTop,
+  moveBottom,
+  remove,
+  setting,
+  typeChange,
+}) => {
   return [
     {
       title: "字段名",
@@ -37,9 +45,9 @@ const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => 
       render(row) {
         return h(NInput, {
           value: row?.field,
-          onUpdateValue: (e) => (row.field = e)
+          onUpdateValue: (e) => (row.field = e),
         });
-      }
+      },
     },
     {
       title: "标题",
@@ -48,25 +56,25 @@ const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => 
       render(row) {
         return h(NInput, {
           value: row?.label,
-          onUpdateValue: (e) => (row.label = e)
+          onUpdateValue: (e) => (row.label = e),
         });
-      }
+      },
     },
     {
       title: "类型",
       key: "type",
       width: "20%",
-      render(row,index) {
+      render(row, index) {
         return h(NSelect, {
           options: typeOptions,
           value: row?.type,
           onUpdateValue: (e) => {
             row.type = e;
             row.edited = true;
-            typeChange(row,index)
-          }
+            typeChange(row, index);
+          },
         });
-      }
+      },
     },
     {
       title: "操作",
@@ -82,7 +90,7 @@ const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => 
                 {
                   onClick: () => {
                     moveTop(index);
-                  }
+                  },
                 },
                 { default: () => "上移" }
               ),
@@ -91,7 +99,7 @@ const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => 
                 {
                   onClick: () => {
                     moveBottom(index);
-                  }
+                  },
                 },
                 { default: () => "下移" }
               ),
@@ -100,7 +108,7 @@ const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => 
                 {
                   onClick: () => {
                     remove(index);
-                  }
+                  },
                 },
                 { default: () => "移除" }
               ),
@@ -109,23 +117,19 @@ const createColumns = ({ moveTop, moveBottom, remove, setting ,typeChange }) => 
                 {
                   onClick: () => {
                     setting(row, index);
-                  }
+                  },
                 },
                 { default: () => "配置" }
-              )
-            ]
+              ),
+            ],
           }
         );
-      }
-    }
+      },
+    },
   ];
 };
 
-export function useHomeTable({
-                               setting = () => {
-                               },
-                               typeChange = () => {}
-                             }) {
+export function useHomeTable({ setting = () => {}, typeChange = () => {} }) {
   const data = ref([]);
 
   function moveTop(index) {
@@ -153,23 +157,22 @@ export function useHomeTable({
     moveBottom,
     remove,
     setting,
-    typeChange
+    typeChange,
   });
 
   function addEmptyRow() {
-
     data.value?.push({
       field: "",
       label: "",
       type: "string",
-      config: getConfigData(elementPlusString)
+      config: getConfigData(elementPlusString),
     });
   }
 
   return {
     columns,
     data,
-    addEmptyRow
+    addEmptyRow,
   };
 }
 
@@ -179,52 +182,61 @@ export function useHomeUploadSql() {
   }
 
   return {
-    getFormatSql
+    getFormatSql,
   };
 }
 
 const uiOptions = [
   {
     label: "Element Plus",
-    value: "element-plus"
+    value: "element-plus",
   },
   {
     label: "Naive",
-    value: "naive"
-  }
+    value: "naive",
+  },
 ];
 
-const tempOptions = [
-  {
-    label: "表格",
-    value: "table-me"
-  },
-  {
-    label: "表单",
-    value: "form-me"
-  }
-];
+const tempOptions = {
+  "element-plus": [
+    {
+      label: "表格",
+      value: "table-me",
+    },
+    {
+      label: "表单",
+      value: "form-me",
+    },
+  ],
+  naive: [
+    {
+      label: "表单",
+      value: "form-me",
+    },
+  ],
+};
 
 export function useHomeGenCode() {
   const genSettingVal = reactive({
     uiType: "element-plus",
-    tempType: "table-me"
+    tempType: "table-me",
   });
 
   function genCodeForTemp(data) {
     // console.log(data);
     // 转换data
-
-    if (data) {
-      data.forEach(item => {
-        item.configFlat = Object.keys(item.config).map(it => {
-          if (it === "options") return;
-          if (typeof item.config[it] === "boolean") {
-            return `:${it}="${String(item.config[it])}"`;
-          } else {
-            return `${it}="${item.config[it]}"`;
-          }
-        }).join(" ");
+    if (data && data.length > 0) {
+      data.forEach((item) => {
+        item.configFlat = Object.keys(item.config)
+          .map((it) => {
+            if (it === "options") return;
+            if (typeof item.config[it] === "boolean") {
+              return `:${it}="${String(item.config[it])}"`;
+            } else {
+              return `${it}="${item.config[it]}"`;
+            }
+          })
+          .join(" ");
       });
     }
 
@@ -234,9 +246,10 @@ export function useHomeGenCode() {
     ) {
       let code = ejs.render(template.elementPlusTableMe, { data });
       // console.log(code);
+
       code = prettier.format(code, {
-        parser: "html",
-        plugins: [parserHtml]
+        parser: "vue",
+        plugins: [prettierHtml, prettierbabel, prettierCss],
       });
       return code;
     } else if (
@@ -246,8 +259,8 @@ export function useHomeGenCode() {
       let code = ejs.render(template.elementPlusFormMe, { data });
       // console.log(code);
       code = prettier.format(code, {
-        parser: "html",
-        plugins: [parserHtml]
+        parser: "vue",
+        plugins: [prettierHtml, prettierbabel, prettierCss],
       });
       return code;
     } else if (
@@ -257,8 +270,8 @@ export function useHomeGenCode() {
       let code = ejs.render(template.naiveFormMe, { data });
       // console.log(code);
       code = prettier.format(code, {
-        parser: "html",
-        plugins: [parserHtml]
+        parser: "vue",
+        plugins: [prettierHtml, prettierbabel, prettierCss],
       });
       return code;
     } else {
@@ -270,15 +283,15 @@ export function useHomeGenCode() {
     uiOptions,
     tempOptions,
     genSettingVal,
-    genCodeForTemp
+    genCodeForTemp,
   };
 }
 
 const menuOptions = [
   {
     label: "打开SQL文件",
-    key: "open"
-  }
+    key: "open",
+  },
 ];
 
 const menuOptionMethod = {
@@ -294,10 +307,10 @@ const menuOptionMethod = {
         {
           description: "Sql数据库文件",
           accept: {
-            "text/plain": [".sql"]
-          }
-        }
-      ]
+            "text/plain": [".sql"],
+          },
+        },
+      ],
     });
     const file = await fileHandle[0].getFile();
     const reader = new FileReader();
@@ -313,11 +326,11 @@ const menuOptionMethod = {
       const _ = [];
       if (sqlMatch) {
         console.log(sqlMatch);
-        sqlMatch.forEach(it => {
+        sqlMatch.forEach((it) => {
           _.push({
             label: it.match(/CREATE TABLE \`(.*?)\`/)[1],
             value: it.match(/CREATE TABLE \`(.*?)\`/)[1],
-            sql: it
+            sql: it,
           });
         });
         console.log(_);
@@ -328,7 +341,7 @@ const menuOptionMethod = {
   },
   save(message) {
     console.log("save....");
-  }
+  },
 };
 
 export function useMenuOption(message, spaceStore) {
@@ -343,6 +356,6 @@ export function useMenuOption(message, spaceStore) {
 
   return {
     menuOptions,
-    handleSelect
+    handleSelect,
   };
 }

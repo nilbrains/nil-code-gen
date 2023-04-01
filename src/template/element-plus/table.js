@@ -5,11 +5,10 @@ export const elementPlusTableMe = `
   
   // ========== 表格 开始 ==========
 
+
   const tableData = useTable({
-    column: [
-      <% for(var i=0;i<data.length;i++){%>
-        { prop: "<%=data[i].field%>", label: "<%=data[i].label%>", },
-      <% } %>
+    "column":[
+      <% for(var i=0;i<data.length;i++){%>{ prop: "<%=data[i].field%>", label: "<%=data[i].label%>" },<% } %>
       { prop: "option", label: "操作", width: 200, render: "slot" },
     ],
   });

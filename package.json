@@ -25,6 +25,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
     "naive-ui": "^2.34.3",
+    "prettier-plugin-java": "^2.1.0",
     "sass": "^1.59.3",
     "unplugin-auto-import": "^0.15.1",
     "unplugin-vue-components": "^0.24.1",
